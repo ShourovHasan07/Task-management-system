@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   postgres:
     image: postgres:16-alpine
@@ -20,20 +18,17 @@ services:
       retries: 5
 
   backend:
-    build: .
+    build:
+      context: ./backend
     container_name: task-backend
     restart: always
     ports:
       - "3001:3001"
     env_file:
       - .env
-    environment:
-      NODE_ENV: development          # ← জোর করে development সেট করা হলো
     depends_on:
       postgres:
         condition: service_healthy
-    volumes:
-      - .:/app                      # development এর জন্য (optional)
 
 volumes:
   postgres_data:
