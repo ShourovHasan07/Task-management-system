@@ -1,30 +1,59 @@
-
-import { Table, Column, Model, DataType, PrimaryKey, Default, CreatedAt, UpdatedAt } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  PrimaryKey,
+  Default,
+  CreatedAt,
+  UpdatedAt,
+} from 'sequelize-typescript';
 
 export enum UserRole {
   ADMIN = 'ADMIN',
   USER = 'USER',
 }
 
-@Table({ tableName: 'users', timestamps: true })
-export class User extends Model {
+// ✅ Define attributes
+interface UserAttributes {
+  id: string;
+  email: string;
+  password: string;
+  role: UserRole;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// ✅ Define creation attributes (id optional)
+interface UserCreationAttributes
+  extends Omit<UserAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+
+@Table({
+  tableName: 'users',
+  timestamps: true,
+})
+export class User extends Model<UserAttributes, UserCreationAttributes> {
+
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)
-  id: string;
+  declare id: string;
 
   @Column({ unique: true, allowNull: false })
-  email: string;
+  declare email: string;
 
   @Column({ allowNull: false })
-  password: string;
+  declare password: string;
 
-  @Column({ type: DataType.ENUM('ADMIN', 'USER'), allowNull: false })
-  role: UserRole;
+  @Column({
+    type: DataType.ENUM(...Object.values(UserRole)),
+    allowNull: false,
+  })
+  declare role: UserRole;
 
   @CreatedAt
-  createdAt: Date;
+  declare createdAt: Date;
 
   @UpdatedAt
-  updatedAt: Date;
+  declare updatedAt: Date;
 }

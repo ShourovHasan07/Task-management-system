@@ -1,4 +1,16 @@
-import { Table, Column, Model, DataType, PrimaryKey, Default, CreatedAt, UpdatedAt, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { 
+  Table, 
+  Column, 
+  Model, 
+  DataType, 
+  PrimaryKey, 
+  Default, 
+  CreatedAt, 
+  UpdatedAt, 
+  ForeignKey, 
+  BelongsTo 
+} from 'sequelize-typescript';
+
 import { User } from '../users/users.model';
 
 export enum TaskStatus {
@@ -9,37 +21,41 @@ export enum TaskStatus {
 
 @Table({ tableName: 'tasks', timestamps: true })
 export class Task extends Model {
+  
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)
-  id: string;
+  declare id: string;                   
 
   @Column({ allowNull: false })
-  title: string;
+  declare title: string;
 
   @Column({ type: DataType.TEXT, allowNull: false })
-  description: string;
+  declare description: string;
 
-  @Column({ type: DataType.ENUM('PENDING', 'PROCESSING', 'DONE'), defaultValue: TaskStatus.PENDING })
-  status: TaskStatus;
+  @Column({ 
+    type: DataType.ENUM('PENDING', 'PROCESSING', 'DONE'), 
+    defaultValue: TaskStatus.PENDING 
+  })
+  declare status: TaskStatus;
 
   @ForeignKey(() => User)
   @Column({ type: DataType.UUID, allowNull: true })
-  assignedToId: string | null;
+  declare assignedToId: string | null;
 
   @BelongsTo(() => User, 'assignedToId')
-  assignedTo: User | null;
+  declare assignedTo: User | null;
 
   @ForeignKey(() => User)
   @Column({ type: DataType.UUID, allowNull: false })
-  createdById: string;
+  declare createdById: string;
 
   @BelongsTo(() => User, 'createdById')
-  createdBy: User;
+  declare createdBy: User;
 
   @CreatedAt
-  createdAt: Date;
+  declare createdAt: Date;              
 
   @UpdatedAt
-  updatedAt: Date;
+  declare updatedAt: Date;              
 }

@@ -1,8 +1,6 @@
-
-
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { User } from '../users/users.model';
+import { User, UserRole } from '../users/users.model'; // ✅ enum import করো
 import * as bcrypt from 'bcryptjs';
 
 @Injectable()
@@ -17,14 +15,15 @@ export class SeedService {
       {
         email: 'admin@tech.com',
         password: await bcrypt.hash('admin123', 10),
-        role: 'ADMIN',
+        role: UserRole.ADMIN, // ✅ FIX
       },
       {
         email: 'user@tech.com',
         password: await bcrypt.hash('user123', 10),
-        role: 'USER',
+        role: UserRole.USER, // ✅ FIX
       },
     ]);
-    console.log('✅ Predefined users seeded: admin@tech.com / user@tech.com');
+
+    console.log(' Predefined users seeded: admin@tech.com / user@tech.com');
   }
 }

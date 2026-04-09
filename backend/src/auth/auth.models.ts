@@ -1,5 +1,12 @@
-
-import { Table, Column, Model, DataType, PrimaryKey, Default, CreatedAt } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  PrimaryKey,
+  Default,
+  CreatedAt,
+} from 'sequelize-typescript';
 
 export enum AuditAction {
   CREATE_TASK = 'CREATE_TASK',
@@ -9,34 +16,41 @@ export enum AuditAction {
   CHANGE_ASSIGNMENT = 'CHANGE_ASSIGNMENT',
 }
 
-@Table({ tableName: 'audit_logs', timestamps: true })
-export class AuditLog extends Model {
+@Table({
+  tableName: 'audit_logs',
+  timestamps: true,
+})
+export class AuditLog extends Model<AuditLog> {
+
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)
-  id: string;
+  declare id: string;
 
   @Column({ allowNull: false })
-  actorId: string;
+  declare actorId: string;
 
   @Column({ allowNull: false })
-  actorEmail: string;
+  declare actorEmail: string;
 
-  @Column({ type: DataType.ENUM(...Object.values(AuditAction)), allowNull: false })
-  actionType: AuditAction;
+  @Column({
+    type: DataType.ENUM(...Object.values(AuditAction)),
+    allowNull: false,
+  })
+  declare actionType: AuditAction;
 
   @Column({ allowNull: false })
-  targetType: string;
+  declare targetType: string;
 
   @Column({ allowNull: false })
-  targetId: string;
+  declare targetId: string;
 
   @Column({ type: DataType.JSONB, allowNull: true })
-  oldData: any;
+  declare oldData?: Record<string, any>;
 
   @Column({ type: DataType.JSONB, allowNull: true })
-  newData: any;
+  declare newData?: Record<string, any>;
 
   @CreatedAt
-  createdAt: Date;
+  declare createdAt: Date;
 }

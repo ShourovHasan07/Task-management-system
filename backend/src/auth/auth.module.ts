@@ -1,42 +1,27 @@
+import { Module } from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { AuthController } from './auth.controller';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from './jwt.strategy';
+import { UsersModule } from '../users/users.module';
 
-import { Table, Column, Model, DataType, PrimaryKey, Default, CreatedAt } from 'sequelize-typescript';
-
-export enum AuditAction {
-  CREATE_TASK = 'CREATE_TASK',
-  UPDATE_TASK = 'UPDATE_TASK',
-  DELETE_TASK = 'DELETE_TASK',
-  CHANGE_STATUS = 'CHANGE_STATUS',
-  CHANGE_ASSIGNMENT = 'CHANGE_ASSIGNMENT',
-}
-
-@Table({ tableName: 'audit_logs', timestamps: true })
-export class AuditLog extends Model {
-  @PrimaryKey
-  @Default(DataType.UUIDV4)
-  @Column(DataType.UUID)
-  id: string;
-
-  @Column({ allowNull: false })
-  actorId: string;
-
-  @Column({ allowNull: false })
-  actorEmail: string;
-
-  @Column({ type: DataType.ENUM(...Object.values(AuditAction)), allowNull: false })
-  actionType: AuditAction;
-
-  @Column({ allowNull: false })
-  targetType: string;
-
-  @Column({ allowNull: false })
-  targetId: string;
-
-  @Column({ type: DataType.JSONB, allowNull: true })
-  oldData: any;
-
-  @Column({ type: DataType.JSONB, allowNull: true })
-  newData: any;
-
-  @CreatedAt
-  createdAt: Date;
-}
+@Module({
+  imports: [
+    UsersModule,
+    PassportModule,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        secret: config.get<string>('JWT_SECRET'), // Make sure .env has JWT_SECRET
+        signOptions: { expiresIn: config.get<string>('JWT_EXPIRES_IN') || '1d' },
+      }),
+    }),
+  ],
+  controllers: [AuthController],
+  providers: [AuthService, JwtStrategy],
+  exports: [AuthService],
+})
+export class AuthModule {}
