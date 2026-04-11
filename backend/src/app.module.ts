@@ -30,14 +30,14 @@ import { AuditLog } from './audit/audit.model';
 
         return {
           dialect: 'postgres',
-          host: configService.get<string>('DB_HOST') || 'postgres',
+          host: configService.get<string>('DB_HOST') || 'localhost',
           port: parseInt(configService.get<string>('DB_PORT') || '5432', 10),
           username: configService.get<string>('DB_USER') || 'postgres',
-          password: configService.get<string>('DB_PASSWORD') || 'postgres',
+          password: configService.get<string>('DB_PASSWORD') || 'shourov123',
           database: configService.get<string>('DB_NAME') || 'taskdb',
           models: [User, Task, AuditLog],
           autoLoadModels: true,
-          synchronize: nodeEnv !== 'production',   // development-এ টেবিল তৈরি হবে
+          synchronize: nodeEnv !== 'development',   // development-এ টেবিল তৈরি হবে
           logging: nodeEnv !== 'production',
         };
       },

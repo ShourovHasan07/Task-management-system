@@ -12,10 +12,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
+        //  Cookie থেকে token
         (req) => req?.cookies?.jwt || null,
+      
+        //  Authorization Bearer token থেকে
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
       ]),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_SECRET'),
+      secretOrKey: configService.get<string>('JWT_SECRET')|| "supersecret" ,
     });
   }
 
